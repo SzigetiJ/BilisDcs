@@ -1,5 +1,5 @@
 
-bin_PROGRAMS = simple_xmpl
+bin_PROGRAMS = dcshof_xmpl1
 
 AM_CFLAGS = -I${top_srcdir}/src
 LDADD = ../src/libbilisdcs.a

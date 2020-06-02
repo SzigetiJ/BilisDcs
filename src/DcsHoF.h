@@ -2,26 +2,22 @@
 #define _DCS_HOF_H_
 
 #include <stddef.h>
-#include <stdbool.h>
-
-typedef size_t ItemSize;
-typedef unsigned char* ItemPtr;
-typedef bool (*ItemRel)(ItemPtr, ItemPtr);
-
+#include "DcsTypes.h"
+#include "DcsLinear.h"
 
 typedef struct {
- ItemSize itemsize;
- size_t capacity;
- size_t size;
- ItemPtr dat;
- ItemRel less;
+  DcsLinear base;
+  ElementRel less;
 } DcsHoF;
 
-DcsHoF dcshof_init(ItemSize, size_t, const ItemPtr, const ItemRel);
-size_t dcshof_size(const DcsHoF*);
-size_t dcshof_capacity(const DcsHoF*);
-size_t dcshof_insert(DcsHoF*, const ItemPtr);
-ItemPtr dcshof_get(const DcsHoF*, size_t);
+DcsHoF dcshof_init(ElementSize, size_t, const ElementPtr, const ElementRel);
+ElementIdx dcshof_size(const DcsHoF*);
+bool dcshof_empty(const DcsHoF*);
+ElementIdx dcshof_capacity(const DcsHoF*);
+bool dcshof_full(const DcsHoF*);
+ElementIdx dcshof_lower_bound(const DcsHoF*, const ElementPtr);
+ElementIdx dcshof_insert(DcsHoF*, const ElementPtr);
+ElementPtr dcshof_get(const DcsHoF*, ElementIdx);
 
 #endif // _DCS_HOF_H_
 

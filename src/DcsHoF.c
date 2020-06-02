@@ -1,48 +1,62 @@
 #include "DcsHoF.h"
+#include "DcsLinear.h"
 #include <string.h>
-
-DcsHoF dcshof_init(ItemSize itemsize, size_t capacity, const ItemPtr dat, const ItemRel less) {
- DcsHoF retv={itemsize, capacity, 0, dat, less};
- return retv;
+/**
+ * Standard data initializer function.
+ * @param itemsize 
+ * @param capacity
+ * @param dat
+ * @param less
+ * @return 
+ */
+DcsHoF dcshof_init(ElementSize elemsize, ElementIdx capacity, const ElementPtr dat, const ElementRel less) {
+  DcsHoF retv = {
+    {elemsize, capacity, 0, dat}, less
+  };
+  return retv;
 }
 
-size_t dcshof_size(const DcsHoF *a) {
- return a->size;
+ElementIdx dcshof_size(const DcsHoF *a) {
+  return dcslinear_size(&a->base);
 }
 
-size_t dcshof_capacity(const DcsHoF *a) {
- return a->capacity;
+bool dcshof_empty(const DcsHoF *a) {
+  return dcslinear_empty(&a->base);
 }
 
-size_t dcshof_insert(DcsHoF *a, const ItemPtr b) {
- size_t idx = 0;
- ItemPtr ptr = a->dat;
- bool go = true;
- while (go && idx < a->size) {
-  bool is_before = a->less(b,ptr);
-  if (!is_before) {
-   ++idx;
-   ptr+=a->itemsize;
-  } else {
-   go = false;
+ElementIdx dcshof_capacity(const DcsHoF *a) {
+  return dcslinear_capacity(&a->base);
+}
+
+bool dcshof_full(const DcsHoF *a) {
+  return dcslinear_full(&a->base);
+}
+
+ElementIdx dcshof_lower_bound(const DcsHoF *a, const ElementPtr b) {
+  ElementIdx idx = 0;
+  while (idx < a->base.size && a->less(dcslinear_get(&a->base, idx), b)) {
+    ++idx;
   }
- }
- if (idx<a->capacity) {
-  if (a->size < a->capacity) {
-   ++a->size;
-  }
-  for (size_t i=a->size - 1; idx<i; --i) {
-   if (i == a->capacity) {
-    continue;	// just forget last item
-   }
-   memcpy(a->dat+(i*a->itemsize), a->dat + ((i-1)*a->itemsize), a->itemsize);
-  }
-  memcpy(a->dat + (idx*a->itemsize), b, a->itemsize);
- }
- return a->size;
+  return idx;
 }
 
-ItemPtr dcshof_get(const DcsHoF *a, size_t i) {
- return (ItemPtr)((int)(a->dat)) + (i*a->itemsize);
+ElementIdx dcshof_insert(DcsHoF *a, const ElementPtr b) {
+  const DcsLinear *cab = &a->base;
+  ElementIdx idx = dcshof_lower_bound(a, b);
+
+  if (idx < a->base.capacity) {
+    if (a->base.size < a->base.capacity) {
+      ++a->base.size;
+    }
+    for (size_t i = a->base.size - 1; idx < i; --i) {
+      dcslinear_set(cab, i, dcslinear_get(cab, i - 1));
+    }
+    dcslinear_set(cab, idx, b);
+  }
+  return a->base.size;
+}
+
+ElementPtr dcshof_get(const DcsHoF *a, ElementIdx i) {
+  return dcslinear_get(&a->base, i);
 }
 
