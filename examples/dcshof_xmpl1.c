@@ -5,16 +5,20 @@
 #define BUFSIZE 80
 #define HALL_OF_FAME_SIZE 2
 
+// Simple structure to be stored in HallOfFame container.
 typedef struct {
   long date;
   int points;
   char user[20];
 } Entry;
 
+// Printer function for Entry.
 int sprintf_entry(char *dest, const Entry *a) {
   return sprintf(dest, "%d\t%s\t%ld", a->points, a->user, a->date);
 }
 
+// The HallOfFame (DcsHoF) structure requires a weak ordering function.
+// This function ranks items by points (higher first), date (later first).
 bool entry_order(ElementPtr a, ElementPtr b) {
   Entry *aa = (Entry*) a;
   Entry *bb = (Entry*) b;
@@ -35,6 +39,8 @@ int main(int argc, const char *argv[]) {
   Entry bar = {1234567891, 65, "Fee"};
   Entry baz = {1234567891, 60, "Bez"};
 
+  // The three items are inserted into the HallOfFame in a given order.
+  // Note that the same item can be inserted multiple times (they get copied).
   Entry * entry_flow[] = {&foo, &bar, &baz, &foo, &baz};
   size_t entry_flow_size = sizeof (entry_flow) / sizeof (entry_flow[0]);
 
@@ -48,6 +54,7 @@ int main(int argc, const char *argv[]) {
 
   printf("HallOfFame capacity: %u,\tsize: %u\n", dcshof_capacity(&hof), dcshof_size(&hof));
 
+  // And here we list the content..
   for (ElementIdx i = 0; i < dcshof_size(&hof); ++i) {
     Entry *item = (Entry*) dcshof_get(&hof, i);
     sprintf_entry(strbuf, item);
