@@ -17,8 +17,8 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-*****************************************************************************/
-#include "DcsHoF.h"
+ *****************************************************************************/
+#include "DcsLinSet.h"
 #include "DcsLinear.h"
 #include "DcsInternal.h"
 #include <string.h>
@@ -31,8 +31,8 @@
  * @param less
  * @return 
  */
-DcsHoF dcshof_init(ElementSize elemsize, ElementIdx capacity, const ElementPtr dat, const ElementRel less) {
-  DcsHoF retv = {
+DcsLinSet dcslinset_init(ElementSize elemsize, ElementIdx capacity, const ElementPtr dat, const ElementRel less) {
+  DcsLinSet retv = {
     {elemsize, capacity, 0, dat}, less
   };
   return retv;
@@ -44,7 +44,7 @@ DcsHoF dcshof_init(ElementSize elemsize, ElementIdx capacity, const ElementPtr d
  * @param a Subject of the function.
  * @return Number of valid elements in the container.
  */
-ElementIdx dcshof_size(const DcsHoF *a) {
+ElementIdx dcslinset_size(const DcsLinSet *a) {
   return dcslinear_size(&a->base);
 }
 
@@ -53,7 +53,7 @@ ElementIdx dcshof_size(const DcsHoF *a) {
  * @param a Subject of the function.
  * @return The container is empty.
  */
-bool dcshof_empty(const DcsHoF *a) {
+bool dcslinset_empty(const DcsLinSet *a) {
   return dcslinear_empty(&a->base);
 }
 
@@ -62,7 +62,7 @@ bool dcshof_empty(const DcsHoF *a) {
  * @param a Subject of the function.
  * @return How many elements can be stored in the container.
  */
-ElementIdx dcshof_capacity(const DcsHoF *a) {
+ElementIdx dcslinset_capacity(const DcsLinSet *a) {
   return dcslinear_capacity(&a->base);
 }
 
@@ -71,7 +71,7 @@ ElementIdx dcshof_capacity(const DcsHoF *a) {
  * @param a Subject of the function.
  * @return The container is full.
  */
-bool dcshof_full(const DcsHoF *a) {
+bool dcslinset_full(const DcsLinSet *a) {
   return dcslinear_full(&a->base);
 }
 
@@ -82,7 +82,7 @@ bool dcshof_full(const DcsHoF *a) {
  * @return The first element index in the container so that the underlying element
  * is not before the given item /size of the container, if no suitable insert point was found/.
  */
-ElementIdx dcshof_lower_bound(const DcsHoF *a, const ElementPtr b) {
+ElementIdx dcslinset_lower_bound(const DcsLinSet *a, const ElementPtr b) {
   return _dcslinear_lower_bound(&a->base, a->less, b);
 }
 
@@ -97,28 +97,41 @@ ElementIdx dcshof_lower_bound(const DcsHoF *a, const ElementPtr b) {
  * @param b The item to insert.
  * @return 
  */
-ElementIdx dcshof_insert(DcsHoF *a, const ElementPtr b) {
+ElementIdx dcslinset_insert(DcsLinSet *a, const ElementPtr b) {
   const DcsLinear *cab = &a->base;
-  ElementIdx idx = dcshof_lower_bound(a, b);
-
-  if (idx < a->base.capacity) {
-    if (a->base.size < a->base.capacity) {
-      ++a->base.size;
-    }
+  if (dcslinear_full(cab)) {
+    return cab->capacity;
+  }
+  ElementIdx idx = dcslinset_lower_bound(a, b);
+  if (idx < cab->size && !a->less(b, dcslinear_get(cab, idx))) {
+    // a already contains b
+  } else {
     for (size_t i = a->base.size - 1; idx < i; --i) {
       dcslinear_set(cab, i, dcslinear_get(cab, i - 1));
     }
     dcslinear_set(cab, idx, b);
+    ++a->base.size;
   }
-  return a->base.size;
+  return idx;
 }
 
-/**
- * Get a pointer to an element by index.
- * @param a The container to examine.
- * @param i Index.
- * @return Pointer to the ith element in the container.
- */
-ElementPtr dcshof_get(const DcsHoF *a, ElementIdx i) {
-  return dcslinear_get(&a->base, i);
+bool dcslinset_remove(DcsLinSet *a, const ElementPtr b) {
+  ElementIdx idx = dcslinset_lower_bound(a, b);
+  bool retv = (idx != a->base.size);
+  if (retv) {
+    const DcsLinear *cab = &a->base;
+    for (ElementIdx i = idx; i < cab->size - 1; ++i) {
+      dcslinear_set(cab, i, dcslinear_get(cab, i + 1));
+    }
+    --a->base.size;
+  }
+  return retv;
+}
+
+bool dcslinset_contains(const DcsLinSet *a, const ElementPtr b) {
+  ElementIdx idx = dcslinset_lower_bound(a, b);
+  return (
+          idx != a->base.size
+          && !a->less(b, dcslinear_get(&a->base, idx))
+          );
 }

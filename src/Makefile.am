@@ -1,8 +1,14 @@
 lib_LIBRARIES = libbilisdcs.a
 
-include_HEADERS = DcsTypes.h DcsLinear.h DcsHoF.h DcsStack.h
+include_HEADERS = DcsTypes.h DcsLinear.h DcsInternal.h DcsHoF.h DcsStack.h DcsLinSet.h
 
-libbilisdcs_a_SOURCES = DcsLinear.c DcsLinear.h DcsHoF.c DcsHoF.h DcsStack.c DcsStack.h DcsTypes.h
+libbilisdcs_a_SOURCES = \
+ DcsLinear.c DcsLinear.h \
+ DcsInternal.c DcsInternal.h \
+ DcsHoF.c DcsHoF.h \
+ DcsStack.c DcsStack.h \
+ DcsLinSet.c DcsLinSet.h \
+ DcsTypes.h
 
 nodist_libbilisdcs_a_SOURCES =
 
