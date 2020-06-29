@@ -31,9 +31,11 @@ extern "C" {
 typedef size_t ElementSize;
 typedef size_t ElementIdx;
 typedef size_t DcsIterator;
+typedef unsigned char Byte;
 
-typedef unsigned char* ElementPtr;
+typedef Byte* ElementPtr;
 typedef bool (*ElementRel)(ElementPtr, ElementPtr);
+typedef size_t (*IntFunction)(ElementPtr);
 
 typedef struct DcsLinear_ DcsLinear;
 
