@@ -40,5 +40,12 @@ void dcslinear_set(const DcsLinear*, ElementIdx, const ElementPtr);
 ElementPtr dcslinear_get(const DcsLinear*, ElementIdx);
 void dcslinear_copy_to(const DcsLinear*, ElementIdx, ElementPtr);
 
+DcsIterator dcslinear_begin(const DcsLinear*);
+DcsIterator dcslinear_end(const DcsLinear*);
+bool dcslinear_iterator_equals(const DcsLinear*, const DcsIterator, const DcsIterator);
+DcsIterator dcslinear_next_iterator(const DcsLinear*, const DcsIterator);
+void dcslinear_inc_iterator(const DcsLinear*, DcsIterator*);
+ElementPtr dcslinear_deref_iterator(const DcsLinear*, const DcsIterator);
+
 #endif // _DCS_LINEAR_H_
 

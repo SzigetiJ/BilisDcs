@@ -35,9 +35,16 @@ ElementIdx dcshof_size(const DcsHoF*);
 bool dcshof_empty(const DcsHoF*);
 ElementIdx dcshof_capacity(const DcsHoF*);
 bool dcshof_full(const DcsHoF*);
-ElementIdx dcshof_lower_bound(const DcsHoF*, const ElementPtr);
-ElementIdx dcshof_insert(DcsHoF*, const ElementPtr);
+DcsIterator dcshof_lower_bound(const DcsHoF*, const ElementPtr);
+DcsIterator dcshof_insert(DcsHoF*, const ElementPtr);
 ElementPtr dcshof_get(const DcsHoF*, ElementIdx);
+
+DcsIterator dcshof_begin(const DcsHoF*);
+DcsIterator dcshof_end(const DcsHoF*);
+bool dcshof_iterator_equals(const DcsHoF*, const DcsIterator, const DcsIterator);
+DcsIterator dcshof_next_iterator(const DcsHoF*, const DcsIterator);
+void dcshof_inc_iterator(const DcsHoF*, DcsIterator*);
+ElementPtr dcshof_deref_iterator(const DcsHoF*, const DcsIterator);
 
 #endif // _DCS_HOF_H_
 

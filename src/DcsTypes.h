@@ -30,6 +30,8 @@ extern "C" {
 
 typedef size_t ElementSize;
 typedef size_t ElementIdx;
+typedef size_t DcsIterator;
+
 typedef unsigned char* ElementPtr;
 typedef bool (*ElementRel)(ElementPtr, ElementPtr);
 

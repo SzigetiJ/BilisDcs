@@ -21,12 +21,14 @@
 #include "DcsInternal.h"
 #include "DcsLinear.h"
 
-ElementIdx _dcslinear_lower_bound(const DcsLinear *a, const ElementRel less, const ElementPtr b) {
-  ElementIdx lo = 0;
-  ElementIdx hi = a->size;
-  while (lo != hi) {
+DcsIterator _dcslinear_lower_bound(const DcsLinear *a, const ElementRel less, const ElementPtr b) {
+  DcsIterator lo = dcslinear_begin(a);
+  DcsIterator hi = dcslinear_end(a);
+  // math..
+  // here we expoit the fact that DcsIterators are raw data indices
+  while (!dcslinear_iterator_equals(a, lo, hi)) {
     ElementIdx mid = (lo + hi) / 2;
-    if (less(dcslinear_get(a, mid), b)) {
+    if (less(dcslinear_deref_iterator(a, mid), b)) {
       lo = (lo==mid) ? (lo + 1) : mid;
     } else {
       hi = mid;

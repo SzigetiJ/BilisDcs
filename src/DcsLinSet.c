@@ -135,3 +135,23 @@ bool dcslinset_contains(const DcsLinSet *a, const ElementPtr b) {
           && !a->less(b, dcslinear_get(&a->base, idx))
           );
 }
+
+DcsIterator dcslinset_begin(const DcsLinSet *a) {
+  return dcslinear_begin(&a->base);
+}
+
+DcsIterator dcslinset_end(const DcsLinSet *a) {
+  return dcslinear_end(&a->base);
+}
+
+bool dcslinset_iterator_equals(const DcsLinSet *a, const DcsIterator it0, const DcsIterator it1) {
+  return dcslinear_iterator_equals(&a->base, it0, it1);
+}
+
+DcsIterator dcslinset_next_iterator(const DcsLinSet *a, const DcsIterator it) {
+  return dcslinear_next_iterator(&a->base, it);
+}
+
+ElementPtr dcslinset_deref_iterator(const DcsLinSet *a, const DcsIterator it) {
+  return dcslinear_deref_iterator(&a->base, it);
+}

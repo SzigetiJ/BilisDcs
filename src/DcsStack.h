@@ -31,8 +31,14 @@ ElementIdx dcsstack_size(const DcsStack*);
 bool dcsstack_empty(const DcsStack*);
 ElementIdx dcsstack_capacity(const DcsStack*);
 bool dcsstack_full(const DcsStack*);
-ElementIdx dcsstack_push(DcsStack*, const ElementPtr);
+DcsIterator dcsstack_push(DcsStack*, const ElementPtr);
 ElementPtr dcsstack_pop(DcsStack*);
+
+DcsIterator dcsstack_begin(const DcsStack*);
+DcsIterator dcsstack_end(const DcsStack*);
+bool dcsstack_iterator_equals(const DcsStack*, const DcsIterator, const DcsIterator);
+DcsIterator dcsstack_next_iterator(const DcsStack*, const DcsIterator);
+ElementPtr dcsstack_deref_iterator(const DcsStack*, const DcsIterator);
 
 #endif // _DCS_STACK_H_
 

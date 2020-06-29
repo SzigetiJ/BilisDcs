@@ -53,3 +53,27 @@ void dcslinear_set(const DcsLinear *a, ElementIdx i, const ElementPtr b) {
 void dcslinear_copy_to(const DcsLinear *a, ElementIdx i, ElementPtr b) {
     memcpy(b, dcslinear_get(a, i), a->itemsize);
 }
+
+DcsIterator dcslinear_begin(const DcsLinear *a) {
+  return 0;
+}
+
+DcsIterator dcslinear_end(const DcsLinear *a) {
+  return a->size;
+}
+
+bool dcslinear_iterator_equals(const DcsLinear *a, const DcsIterator it0, const DcsIterator it1) {
+  return it0 == it1;
+}
+
+DcsIterator dcslinear_next_iterator(const DcsLinear *a, const DcsIterator it) {
+  return it + 1;
+}
+
+void dcslinear_inc_iterator(const DcsLinear *a, DcsIterator *it) {
+  ++*it;
+}
+
+ElementPtr dcslinear_deref_iterator(const DcsLinear *a, const DcsIterator it) {
+  return a->dat + it;
+}

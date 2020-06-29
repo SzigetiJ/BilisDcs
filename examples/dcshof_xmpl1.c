@@ -55,8 +55,8 @@ int main(int argc, const char *argv[]) {
   printf("HallOfFame capacity: %u,\tsize: %u\n", dcshof_capacity(&hof), dcshof_size(&hof));
 
   // And here we list the content..
-  for (ElementIdx i = 0; i < dcshof_size(&hof); ++i) {
-    Entry *item = (Entry*) dcshof_get(&hof, i);
+  for (DcsIterator i = dcshof_begin(&hof); !dcshof_iterator_equals(&hof, i, dcshof_end(&hof)); dcshof_inc_iterator(&hof, &i)) {
+    Entry *item = (Entry*) dcshof_deref_iterator(&hof, i);
     sprintf_entry(strbuf, item);
     printf("HallOfFame #%u:\t{%s}\n", (unsigned int) i, strbuf);
   }

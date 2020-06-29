@@ -82,7 +82,7 @@ bool dcshof_full(const DcsHoF *a) {
  * @return The first element index in the container so that the underlying element
  * is not before the given item /size of the container, if no suitable insert point was found/.
  */
-ElementIdx dcshof_lower_bound(const DcsHoF *a, const ElementPtr b) {
+DcsIterator dcshof_lower_bound(const DcsHoF *a, const ElementPtr b) {
   return _dcslinear_lower_bound(&a->base, a->less, b);
 }
 
@@ -97,7 +97,7 @@ ElementIdx dcshof_lower_bound(const DcsHoF *a, const ElementPtr b) {
  * @param b The item to insert.
  * @return 
  */
-ElementIdx dcshof_insert(DcsHoF *a, const ElementPtr b) {
+DcsIterator dcshof_insert(DcsHoF *a, const ElementPtr b) {
   const DcsLinear *cab = &a->base;
   ElementIdx idx = dcshof_lower_bound(a, b);
 
@@ -122,3 +122,28 @@ ElementIdx dcshof_insert(DcsHoF *a, const ElementPtr b) {
 ElementPtr dcshof_get(const DcsHoF *a, ElementIdx i) {
   return dcslinear_get(&a->base, i);
 }
+
+DcsIterator dcshof_begin(const DcsHoF *a) {
+  return dcslinear_begin(&a->base);
+}
+
+DcsIterator dcshof_end(const DcsHoF *a) {
+  return dcslinear_end(&a->base);
+}
+
+bool dcshof_iterator_equals(const DcsHoF *a, const DcsIterator it0, const DcsIterator it1) {
+  return dcslinear_iterator_equals(&a->base, it0, it1);
+}
+
+DcsIterator dcshof_next_iterator(const DcsHoF *a, const DcsIterator it) {
+  return dcslinear_next_iterator(&a->base, it);
+}
+
+void dcshof_inc_iterator(const DcsHoF *a, DcsIterator *it) {
+  return dcslinear_inc_iterator(&a->base, it);
+}
+
+ElementPtr dcshof_deref_iterator(const DcsHoF *a, const DcsIterator it) {
+  return dcslinear_deref_iterator(&a->base, it);
+}
+

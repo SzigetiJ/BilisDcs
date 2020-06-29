@@ -30,7 +30,7 @@
 extern "C" {
 #endif
 
-ElementIdx _dcslinear_lower_bound(const DcsLinear*, const ElementRel, const ElementPtr);
+DcsIterator _dcslinear_lower_bound(const DcsLinear*, const ElementRel, const ElementPtr);
 
 
 #ifdef __cplusplus

@@ -43,10 +43,17 @@ ElementIdx dcslinset_size(const DcsLinSet*);
 bool dcslinset_empty(const DcsLinSet*);
 ElementIdx dcslinset_capacity(const DcsLinSet*);
 bool dcslinset_full(const DcsLinSet*);
-ElementIdx dcslinset_lower_bound(const DcsLinSet*, const ElementPtr);
-ElementIdx dcslinset_insert(DcsLinSet*, const ElementPtr);
+
+DcsIterator dcslinset_lower_bound(const DcsLinSet*, const ElementPtr);
+DcsIterator dcslinset_insert(DcsLinSet*, const ElementPtr);
 bool dcslinset_remove(DcsLinSet*, const ElementPtr);
 bool dcslinset_contains(const DcsLinSet*, const ElementPtr);
+
+DcsIterator dcslinset_begin(const DcsLinSet*);
+DcsIterator dcslinset_end(const DcsLinSet*);
+bool dcslinset_iterator_equals(const DcsLinSet*, const DcsIterator, const DcsIterator);
+DcsIterator dcslinset_next_iterator(const DcsLinSet*, const DcsIterator);
+ElementPtr dcslinset_deref_iterator(const DcsLinSet*, const DcsIterator);
 
 #ifdef __cplusplus
 }

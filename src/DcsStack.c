@@ -42,12 +42,12 @@ bool dcsstack_full(const DcsStack *a) {
   return dcslinear_full(a);
 }
 
-ElementIdx dcsstack_push(DcsStack *a, const ElementPtr b) {
+DcsIterator dcsstack_push(DcsStack *a, const ElementPtr b) {
   if (a->size < a->capacity) {
     dcslinear_set(a, a->size, b);
     ++a->size;
   }
-  return a->size;
+  return dcsstack_end(a);
 }
 
 ElementPtr dcsstack_pop(DcsStack *a) {
@@ -55,4 +55,24 @@ ElementPtr dcsstack_pop(DcsStack *a) {
     --a->size;
   }
   return dcslinear_get(a, a->size);
+}
+
+DcsIterator dcsstack_begin(const DcsStack *a) {
+  return dcslinear_begin(a);
+}
+
+DcsIterator dcsstack_end(const DcsStack *a) {
+  return dcslinear_end(a);
+}
+
+bool dcsstack_iterator_equals(const DcsStack *a, const DcsIterator it0, const DcsIterator it1) {
+  return dcslinear_iterator_equals(a, it0, it1);
+}
+
+DcsIterator dcsstack_next_iterator(const DcsStack *a, const DcsIterator it) {
+  return dcslinear_next_iterator(a, it);
+}
+
+ElementPtr dcsstack_deref_iterator(const DcsStack *a, const DcsIterator it) {
+  return dcslinear_deref_iterator(a, it);
 }
