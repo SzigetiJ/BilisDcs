@@ -75,6 +75,7 @@ bool dcshashset_insert(DcsHashSet*, const ElementPtr);
 bool dcshashset_remove(DcsHashSet*, const ElementPtr);
 bool dcshashset_contains(const DcsHashSet*, const ElementPtr);
 
+DcsIterator dcshashset_find(const DcsHashSet*, const ElementPtr);
 DcsIterator dcshashset_begin(const DcsHashSet*);
 DcsIterator dcshashset_end(const DcsHashSet*);
 bool dcshashset_iterator_equals(const DcsHashSet*, const DcsIterator, const DcsIterator);

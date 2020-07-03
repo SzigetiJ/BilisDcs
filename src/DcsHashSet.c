@@ -20,6 +20,21 @@
  *****************************************************************************/
 #include "DcsHashSet.h"
 #include <string.h>
+#include <stdio.h>
+
+static void _internal_find(const DcsHashSet *a, const ElementPtr b, ElementIdx **slot_idx_wptr, bool **slot_occupied_wptr) {
+  ElementIdx hx = (a->hash(b)) % a->capacity;
+  *slot_occupied_wptr = a->bucket_has_first_a + hx;
+  *slot_idx_wptr = a->bucket_first_idx_a + hx;
+  while (**slot_occupied_wptr) {
+    if (a->equals(a->dat + **slot_idx_wptr * a->itemsize, b)) {
+      break;
+    }
+    *slot_occupied_wptr = a->bucket_has_next_a + **slot_idx_wptr;
+    *slot_idx_wptr = a->bucket_next_idx_a + **slot_idx_wptr;
+  }
+}
+
 
 /**
  * Standard data initializer function.
@@ -79,16 +94,13 @@ bool dcshashset_full(const DcsHashSet *a) {
 bool dcshashset_insert(DcsHashSet *a, const ElementPtr b) {
   if (dcshashset_full(a))
     return false;
-  ElementIdx hx = (a->hash(b)) % a->capacity;
-  bool *slot_occupied_wptr = a->bucket_has_first_a + hx;
-  ElementIdx *slot_idx_wptr = a->bucket_first_idx_a + hx;
-  while (*slot_occupied_wptr) {
-    if (a->equals(a->dat + *slot_idx_wptr * a->itemsize, b)) {
-      return false;
-    }
-    slot_occupied_wptr = a->bucket_has_next_a + *slot_idx_wptr;
-    slot_idx_wptr = a->bucket_next_idx_a + *slot_idx_wptr;
+  ElementIdx *slot_idx_wptr;
+  bool *slot_occupied_wptr;
+  _internal_find(a, b, &slot_idx_wptr, &slot_occupied_wptr);
+  if (*slot_occupied_wptr) {
+    return false;
   }
+
   --a->dat_free_slot_i;
   ElementIdx slot_idx = a->dat_free_slot_a[a->dat_free_slot_i];
   *slot_occupied_wptr = true;
@@ -108,14 +120,44 @@ bool dcshashset_insert(DcsHashSet *a, const ElementPtr b) {
   return true;
 }
 
-// TODO
 bool dcshashset_remove(DcsHashSet *a, const ElementPtr b) {
-  return false;
+  ElementIdx slot_idx;
+  ElementIdx *slot_idx_wptr;
+  bool *slot_occupied_wptr;
+  _internal_find(a, b, &slot_idx_wptr, &slot_occupied_wptr);
+  if (*slot_occupied_wptr == false) {
+    return false;
+  }
+  slot_idx = *slot_idx_wptr;
+
+  // bucket
+  *slot_idx_wptr = a->bucket_next_idx_a[slot_idx];
+  *slot_occupied_wptr = a->bucket_has_next_a[slot_idx];
+
+  // free slots
+  a->dat_free_slot_a[a->dat_free_slot_i++]=slot_idx;
+
+  // chaining
+  ElementIdx *next_wptr = (slot_idx == a->begin_idx) ? &a->begin_idx : (a->next_idx_a + a->prev_idx_a[slot_idx]);
+  ElementIdx *prev_wptr = (slot_idx == a->last_idx) ? &a->last_idx : (a->prev_idx_a + a->next_idx_a[slot_idx]);
+  *next_wptr = a->next_idx_a[slot_idx];
+  *prev_wptr = a->prev_idx_a[slot_idx];
+
+  return true;
 }
 
-// TODO
 bool dcshashset_contains(const DcsHashSet *a, const ElementPtr b) {
-  return false;
+  ElementIdx *slot_idx_wptr;
+  bool *slot_occupied_wptr;
+  _internal_find(a, b, &slot_idx_wptr, &slot_occupied_wptr);
+  return *slot_occupied_wptr;
+}
+
+DcsIterator dcshashset_find(const DcsHashSet *a, const ElementPtr b) {
+  ElementIdx *slot_idx_wptr;
+  bool *slot_occupied_wptr;
+  _internal_find(a, b, &slot_idx_wptr, &slot_occupied_wptr);
+  return *slot_occupied_wptr?*slot_idx_wptr:a->capacity;
 }
 
 DcsIterator dcshashset_begin(const DcsHashSet *a) {
