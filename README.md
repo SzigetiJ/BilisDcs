@@ -3,6 +3,35 @@ BilisDcs
 
 _Collection of Reliable Data Container Structures for Standard C_
 
+Quick Intro
+-----------
+
+1. Define your type
+```c
+typedef struct {
+ char name[20];
+ int param_a;
+ unsigned int param_b;
+} NameAndValue;
+```
+2. Allocate space for the container
+```c
+#define STACKSIZE 16
+NameAndValue name_and_values[STACKSIZE];
+```
+3. Initialize the container
+```c
+DcsStack nv_stack = dcsstack_init(sizeof(NameAndValue), STACKSIZE, name_and_values);
+```
+4. Use the container
+```c
+NameAndValue nv0 = {"Foo", -123, 4};
+dcsstack_push(&nv_stack, &nv0);
+int nv_size = dcsstack_size(&nv_stack);
+// etc.
+```
+
+
 Provided Structures
 -------------------
 
