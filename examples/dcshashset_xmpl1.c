@@ -15,6 +15,7 @@
 #define USERNAME_LEN 20
 #define BUFSIZE 80
 #define HASHSET_SIZE 4
+#define BUCKETS 8
 
 typedef struct {
   char name[USERNAME_LEN];
@@ -44,22 +45,37 @@ bool user_equals(ElementPtr a, ElementPtr b) {
 
 void print_hashset_raw(const DcsHashSet *hs) {
   printf("capacity: %u, top: %u\n", hs->capacity, hs->dat_free_slot_i);
-  printf("begin: %u, last: %u\n", hs->begin_idx, hs->last_idx);
+  printf("begin: %u, last: %u\n", hs->begin_sidx, hs->last_sidx);
   printf("slot chaining by age:\n");
   for (ElementIdx i = 0; i < hs->capacity; ++i) {
-    printf("\t%u <- %u -> %u\n", hs->prev_idx_a[i], i, hs->next_idx_a[i]);
+    printf("\t%u <- %u -> %u\n", hs->prev_sidx_a[i], i, hs->next_sidx_a[i]);
   }
   printf("bucket to slot mapping:\n");
-  for (ElementIdx i = 0; i < hs->capacity; ++i) {
-    printf("\t%u: (%c) -> %u\n", i, (hs->bucket_has_first_a[i] ? '*' : '-'), hs->bucket_first_idx_a[i]);
+  for (ElementIdx i = 0; i < hs->buckets; ++i) {
+    bool valid = hs->bucket_head_valid_a[i];
+    printf("\t%u: (%c)", i, (valid ? '*' : '-'));
+    if (valid) {
+      printf(" -> %u", hs->bucket_head_sidx_a[i]);
+    }
+    printf("\n");
   }
   printf("slot successors (within bucket):\n");
   for (ElementIdx i = 0; i < hs->capacity; ++i) {
-    printf("\t%u: (%c) -> %u\n", i, (hs->bucket_has_next_a[i] ? '*' : '-'), hs->bucket_next_idx_a[i]);
+    bool valid = hs->bucket_next_valid_a[i];
+    printf("\t%u: (%c)", i, (valid ? '*' : '-'));
+    if (valid) {
+      printf(" -> %u",  hs->bucket_next_sidx_a[i]);
+    }
+    printf("\n");
   }
   printf("free slot stack:\n");
   for (ElementIdx i = 0; i < hs->capacity; ++i) {
-    printf("\t(%c) %u\n", ((i < hs->dat_free_slot_i) ? '*' : '-'), hs->dat_free_slot_a[i]);
+    bool valid = (i < hs->dat_free_slot_i);
+    printf("\t(%c)", (valid ? '*' : '-'));
+    if (valid) {
+      printf(" %u",  hs->dat_free_slot_a[i]);
+    }
+    printf("\n");
   }
 }
 
@@ -80,9 +96,9 @@ int main(int argc, const char *argv[]) {
 
   // store
   User hashset_dat_raw[HASHSET_SIZE];
-  ElementIdx auxidx_a[DCSHASHSET_AUXIDX_SIZE(HASHSET_SIZE)];
-  bool auxflag_a[DCSHASHSET_AUXFLAG_SIZE(HASHSET_SIZE)];
-  DcsHashSet user_hs = dcshashset_init(sizeof (User), HASHSET_SIZE, (ElementPtr) hashset_dat_raw, auxidx_a, auxflag_a, user_hash, user_equals);
+  ElementIdx auxidx_a[DCSHASHSET_AUXIDX_SIZE(BUCKETS, HASHSET_SIZE)];
+  bool auxflag_a[DCSHASHSET_AUXFLAG_SIZE(BUCKETS, HASHSET_SIZE)];
+  DcsHashSet user_hs = dcshashset_init(sizeof (User), HASHSET_SIZE, BUCKETS, (ElementPtr) hashset_dat_raw, auxidx_a, auxflag_a, user_hash, user_equals);
 
   // data, Pt. 1
   User u0 = {"John", 12};
@@ -105,7 +121,7 @@ int main(int argc, const char *argv[]) {
 
   for (size_t i = 0; i < user_flow_size; ++i) {
     sprintf_user(strbuf, user_flow[i]);
-    printf("Inserting into HashSet: {%s}... ", strbuf);
+    fprintf(stderr, "Inserting into HashSet: {%s}... ", strbuf);
     bool insert_result = dcshashset_insert(&user_hs, (ElementPtr) user_flow[i]);
     printf("%s\n", (insert_result ? "OK" : "FAIL"));
   }

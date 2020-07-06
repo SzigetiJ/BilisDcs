@@ -22,8 +22,8 @@
 #ifndef DCSHASHSET_H
 #define DCSHASHSET_H
 
-#define DCSHASHSET_AUXIDX_SIZE(C) (5*(C))
-#define DCSHASHSET_AUXFLAG_SIZE(C) (2*(C))
+#define DCSHASHSET_AUXIDX_SIZE(B, C) ((B) + 4*(C))
+#define DCSHASHSET_AUXFLAG_SIZE(B, C) ((B) + (C))
 
 #include <stddef.h>
 #include "DcsTypes.h"
@@ -33,39 +33,46 @@ extern "C" {
 #endif
 
 /**
- * Set based on bucket hash table.
+ * HashSet data container structure with two levels of indexing.
+ * The container can store values (V) of size itemsize (L).
+ * The container cannot store more values than its capacity (C).
+ * Data lookup is accelerated by hash function ($h(x): x \in V => unsigned integer$).
+ * DcsHashSet deals with buckets (B). The first level index (bucket index, bidx) of a value is given by $h(x) mod B$.
+ * The second level index (slot index, sidx) of the value is its index in the storage array.
+ * 
  * In this implementation all the arrays and indices
  * are stored in a raw form (i.e., are not compressed).
- * Auxilliary data requires (3 + 5 * capacity) * sizeof(ElementIdx) + 2 * capacity * sizeof(bool) additional space.
+ * Auxilliary data requires (3 + 4 * capacity + 1 * buckets) * sizeof(ElementIdx) + (1 * capacity + 1 * buckets) * sizeof(bool) additional space.
  */
 typedef struct {
   const ElementSize itemsize;
   // allocated dat slots chained by age
   // for accelerating remove operation
-  ElementIdx begin_idx;
-  ElementIdx last_idx;
-  ElementIdx *next_idx_a; ///< Length: capacity
-  ElementIdx *prev_idx_a; ///< Length: capacity
+  ElementIdx begin_sidx;
+  ElementIdx last_sidx;
+  ElementIdx *next_sidx_a;  ///< Length: capacity
+  ElementIdx *prev_sidx_a;  ///< Length: capacity
 
   // per bucket chains
-  ElementIdx *bucket_first_idx_a; ///< Length: capacity
-  bool *bucket_has_first_a; ///< Length: capacity
-  ElementIdx *bucket_next_idx_a;
-  bool *bucket_has_next_a;
+  ElementIdx *bucket_head_sidx_a; ///< Length: buckets
+  bool *bucket_head_valid_a;      ///< Length: buckets
+  ElementIdx *bucket_next_sidx_a; ///< Length: capacity
+  bool *bucket_next_valid_a;      ///< Length: capacity
 
   // stack of free slots in dat array
   // for accelerating insert operation
-  ElementIdx *dat_free_slot_a;
-  ElementIdx dat_free_slot_i;
+  ElementIdx *dat_free_slot_a;    ///< Length: capacity
+  ElementIdx dat_free_slot_i;     ///< top of the stack
 
   // basic container
   const ElementPtr dat;
   const ElementIdx capacity;
+  const ElementIdx buckets;
   IntFunction hash;
   ElementRel equals;
 } DcsHashSet;
 
-DcsHashSet dcshashset_init(ElementSize, size_t, const ElementPtr, ElementIdx*, bool*, const IntFunction, const ElementRel);
+DcsHashSet dcshashset_init(ElementSize, size_t, size_t, const ElementPtr, ElementIdx*, bool*, const IntFunction, const ElementRel);
 ElementIdx dcshashset_size(const DcsHashSet*);
 bool dcshashset_empty(const DcsHashSet*);
 ElementIdx dcshashset_capacity(const DcsHashSet*);
