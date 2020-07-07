@@ -1,3 +1,7 @@
+![GitHub](https://img.shields.io/github/license/SzigetiJ/BilisDcs)
+![C/C++ CI](https://github.com/SzigetiJ/BilisDcs/workflows/C/C++%20CI/badge.svg)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/3c6792bc6f0749bf898cba55f89b92e2)](https://www.codacy.com/manual/SzigetiJ/BilisDcs?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=SzigetiJ/BilisDcs&amp;utm_campaign=Badge_Grade)
+
 BilisDcs
 ========
 
