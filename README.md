@@ -31,6 +31,47 @@ int nv_size = dcsstack_size(&nv_stack);
 // etc.
 ```
 
+Installation
+------------
+
+### Get the source
+
+Either clone the git source or download and extract the zip. Cloning git source is preferred.
+
+### Autotools preparation
+
+First, you need to run `aclocal`.
+
+Next, run `autoconf`.
+
+Finally, run `automake --add-missing`.
+
+```sh
+aclocal
+autoconf
+automake --add-missing
+```
+
+### Configure & Install
+
+The [INSTALL](INSTALL) file already describes how to run the `configure` script.
+
+Installation prefix, compiler, target platform, etc. can be overridden at this step.
+
+```sh
+./configure
+make
+make install
+```
+
+### Check examples
+
+The make process compiles -along with other source files- the example files.
+The example binaries are placed in the [examples](examples) directory.
+Check them out, e.g.,
+```sh
+examples/dcshashset_xmpl1_demo
+```
 
 Provided Structures
 -------------------
@@ -38,7 +79,7 @@ Provided Structures
 | Structure | Description | Implementation | Documentation | Tests | Examples |
 | --------- | ----------- | -------------- | ------------- | ----- | -------- |
 | DcsFIFO | Circular buffer based FIFO | _missing_ | _missing_ | _missing_ | _missing_ |
-| DcsHashSet | Capacity constrained hashset | **READY** | **READY** | _missing_ | **1** |
+| DcsHashSet | Capacity constrained hashset | **READY** | **READY** | _missing_ | **2** |
 | DcsHS | Size optimized hashset | _missing_ | _missing_ | _missing_ | _missing_ |
 | DcsHoF | _Hall of Fame_ -- stores Top N elements | **READY** | **READY** | _missing_ | **1** |
 | DcsLinSet | Array based, ordered set | **READY** | _in progress_ | _missing_ | _missing_ |
