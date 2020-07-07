@@ -16,7 +16,8 @@
 /aclocal.m4
 /compile
 /examples/dcshof_xmpl1
-/examples/dcshashset_xmpl1
+/examples/dcshashset_xmpl1_demo
+/examples/dcshashset_xmpl2_uniq
 /depcomp
 /install-sh
 /missing
