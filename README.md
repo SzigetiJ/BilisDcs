@@ -1,6 +1,8 @@
 BilisDcs
 ========
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/598f27cfc3334093971116d6ad4f6574)](https://app.codacy.com/manual/SzigetiJ/BilisDcs?utm_source=github.com&utm_medium=referral&utm_content=SzigetiJ/BilisDcs&utm_campaign=Badge_Grade_Dashboard)
+
 _Collection of Reliable Data Container Structures for Standard C_
 
 Quick Intro
