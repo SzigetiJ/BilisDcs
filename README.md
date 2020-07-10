@@ -88,7 +88,7 @@ Provided Structures
 | DcsHoF | _Hall of Fame_ -- stores Top N elements | **READY** | **READY** | _missing_ | **1** |
 | DcsLinSet | Array based, ordered set | **READY** | _in progress_ | _missing_ | _missing_ |
 | DcsHashMultiMap | Multiple values with the same key| _missing_ | _missing_ | _missing_ | _missing_ |
-| DcsStack | Simple, size constrained stack | **READY** | _missing_ | _missing_ | _missing_ |
+| DcsStack | Simple, size constrained stack | **READY** | _missing_ | _missing_ | **1** |
 
 Key Features
 ------------
