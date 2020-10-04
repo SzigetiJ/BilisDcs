@@ -7,11 +7,18 @@ AC_PROG_RANLIB
 AC_PROG_SED
 
 AC_DEFINE(USE_STD_TYPES)
+AC_CHECK_FUNCS([memset])
+AC_CHECK_FUNCS([strchr])
+AC_CHECK_HEADERS([stddef.h])
+AC_CHECK_HEADERS([string.h])
+AC_CHECK_HEADER_STDBOOL
+AC_TYPE_SIZE_T
 
 AC_CONFIG_FILES([
   Makefile
   src/Makefile
   examples/Makefile
+  tests/Makefile
 ])
 
 AC_OUTPUT

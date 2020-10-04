@@ -1,3 +1,3 @@
 AUTOMAKE_OPTIONS =
-SUBDIRS=src examples
+SUBDIRS=src examples tests
 

@@ -10,6 +10,10 @@
 /examples/Makefile
 /examples/Makefile.in
 /examples/*.o
+/tests/.deps
+/tests/Makefile
+/tests/Makefile.in
+/tests/*.o
 /autom4te.cache/
 /config.log
 /config.status
