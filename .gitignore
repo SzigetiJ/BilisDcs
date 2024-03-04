@@ -19,9 +19,16 @@
 /config.status
 /aclocal.m4
 /compile
+/coverage/*.gcda
+/coverage/*.gcno
+/coverage/*.o
+/coverage/*.info
+/coverage/*_test
+/coverage/html
 /examples/dcshof_xmpl1
 /examples/dcshashset_xmpl1_demo
 /examples/dcshashset_xmpl2_uniq
 /depcomp
+/dist
 /install-sh
 /missing
