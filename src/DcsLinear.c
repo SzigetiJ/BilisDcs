@@ -75,5 +75,5 @@ void dcslinear_inc_iterator(const DcsLinear *a, DcsIterator *it) {
 }
 
 ElementPtr dcslinear_deref_iterator(const DcsLinear *a, const DcsIterator it) {
-  return a->dat + it;
+  return a->dat + it * a->itemsize;
 }
