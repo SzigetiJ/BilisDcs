@@ -1,6 +1,12 @@
 ![GitHub](https://img.shields.io/github/license/SzigetiJ/BilisDcs)
 ![C/C++ CI](https://github.com/SzigetiJ/BilisDcs/workflows/C/C++%20CI/badge.svg)
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/3c6792bc6f0749bf898cba55f89b92e2)](https://www.codacy.com/manual/SzigetiJ/BilisDcs?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=SzigetiJ/BilisDcs&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/3c6792bc6f0749bf898cba55f89b92e2)](https://app.codacy.com/gh/SzigetiJ/BilisDcs/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
+[![codecov](https://codecov.io/gh/SzigetiJ/BilisDcs/branch/master/graph/badge.svg)](https://codecov.io/gh/SzigetiJ/BilisDcs)
+[![GitHub code size](https://img.shields.io/github/languages/code-size/SzigetiJ/BilisDcs)](https://github.com/SzigetiJ/BilisDcs)
+![GitHub repo size](https://img.shields.io/github/repo-size/SzigetiJ/BilisDcs)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/y/SzigetiJ/BilisDcs)
+![GitHub issues](https://img.shields.io/github/issues/SzigetiJ/BilisDcs)
+![GitHub closed issues](https://img.shields.io/github/issues-closed/SzigetiJ/BilisDcs)
 
 BilisDcs
 ========
