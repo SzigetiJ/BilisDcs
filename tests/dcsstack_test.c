@@ -29,7 +29,7 @@ DcsStack dcss[] = {
 };
 
 const char T2DAT_INIT[] = "ab0ab1ab2ab3ab4";
-const char T2DAT[15];
+char T2DAT[15];
 const DcsStack T2 = {3, 5, 5, (ElementPtr) T2DAT};
 
 bool test_dcsstack_init() {

@@ -28,7 +28,7 @@ DcsLinear dcss[] = {
 };
 
 const char T2DAT_INIT[] = "ab0ab1ab2ab3ab4";
-const char T2DAT[15];
+char T2DAT[15];
 const DcsLinear T2 = {3, 5, 5, (ElementPtr) T2DAT};
 
 bool test_dcsstack_init() {
@@ -184,25 +184,25 @@ bool test_dcslinear_it_all() {
  for (ElementIdx i = 0; i < T2.capacity; ++i) {
   DcsIterator it_nxt = dcslinear_next_iterator(&T2, it0);
   if (it_nxt != it0 + 1) {
-   fprintf(stderr, "dcslinear_next_iterator() failed at iteration #%u\n", i);
+   fprintf(stderr, "dcslinear_next_iterator() failed at iteration #%zu\n", i);
    pass = false;
   }
   if (dcslinear_iterator_equals(&T2, it_nxt, it0)) {
-   fprintf(stderr, "!dcslinear_iterator_equals() failed at iteration #%u\n", i);
+   fprintf(stderr, "!dcslinear_iterator_equals() failed at iteration #%zu\n", i);
    pass = false;
   }
   ElementPtr dat0 = dcslinear_deref_iterator(&T2, it0);
   if (dat0 != dcslinear_get(&T2, i)) {
-   fprintf(stderr, "dcslinear_deref_iterator() failed at iteration #%u\n", i);
+   fprintf(stderr, "dcslinear_deref_iterator() failed at iteration #%zu\n", i);
    pass = false;
   }
   dcslinear_inc_iterator(&T2, &it0);
   if (it_nxt != it0) {
-   fprintf(stderr, "dcslinear_inc_iterator() failed at iteration #%u\n", i);
+   fprintf(stderr, "dcslinear_inc_iterator() failed at iteration #%zu\n", i);
    pass = false;
   }
   if (!dcslinear_iterator_equals(&T2, it_nxt, it0)) {
-   fprintf(stderr, "dcslinear_iterator_equals() failed at iteration #%u\n", i);
+   fprintf(stderr, "dcslinear_iterator_equals() failed at iteration #%zu\n", i);
    pass = false;
   }
  }
