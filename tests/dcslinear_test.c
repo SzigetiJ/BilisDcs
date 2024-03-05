@@ -6,7 +6,7 @@
 
 // test data
 unsigned char dat10[10];
-DcsLinear dcsl[] = {
+DcsLinear dcss[] = {
  {
   .itemsize = 5,
   .capacity = 2,
@@ -27,7 +27,11 @@ DcsLinear dcsl[] = {
  }
 };
 
-bool test_dcslinear_init() {
+const char T2DAT_INIT[] = "ab0ab1ab2ab3ab4";
+const char T2DAT[15];
+const DcsLinear T2 = {3, 5, 5, (ElementPtr) T2DAT};
+
+bool test_dcsstack_init() {
  bool pass = true;
  Byte datpool[200];
  ElementSize size_a[] = {1, 2, 4, 8};
@@ -51,8 +55,8 @@ bool test_dcslinear_init() {
 bool test_dcslinear_size() {
  bool pass = true;
  size_t exp_size[] = {0, 1, 5};
- for (unsigned int i = 0; i < sizeof (dcsl) / sizeof (dcsl[0]); ++i) {
-  size_t dcsl_size = dcslinear_size(&dcsl[i]);
+ for (unsigned int i = 0; i < sizeof (dcss) / sizeof (dcss[0]); ++i) {
+  size_t dcsl_size = dcslinear_size(&dcss[i]);
   if (exp_size[i] != dcsl_size) {
    fprintf(stderr, "dcslinear_size() failed at input #%u\n", i);
    pass = false;
@@ -64,8 +68,8 @@ bool test_dcslinear_size() {
 bool test_dcslinear_capacity() {
  bool pass = true;
  size_t exp_cap[] = {2, 2, 5};
- for (unsigned int i = 0; i < sizeof (dcsl) / sizeof (dcsl[0]); ++i) {
-  size_t dcsl_cap = dcslinear_capacity(&dcsl[i]);
+ for (unsigned int i = 0; i < sizeof (dcss) / sizeof (dcss[0]); ++i) {
+  size_t dcsl_cap = dcslinear_capacity(&dcss[i]);
   if (exp_cap[i] != dcsl_cap) {
    fprintf(stderr, "dcslinear_capacity() failed at input #%u\n", i);
    pass = false;
@@ -77,8 +81,8 @@ bool test_dcslinear_capacity() {
 bool test_dcslinear_empty() {
  bool pass = true;
  bool exp_empty[] = {true, false, false};
- for (unsigned int i = 0; i < sizeof (dcsl) / sizeof (dcsl[0]); ++i) {
-  bool dcsl_empty = dcslinear_empty(&dcsl[i]);
+ for (unsigned int i = 0; i < sizeof (dcss) / sizeof (dcss[0]); ++i) {
+  bool dcsl_empty = dcslinear_empty(&dcss[i]);
   if (exp_empty[i] != dcsl_empty) {
    fprintf(stderr, "dcslinear_empty() failed at input #%u\n", i);
    pass = false;
@@ -90,8 +94,8 @@ bool test_dcslinear_empty() {
 bool test_dcslinear_full() {
  bool pass = true;
  bool expected[] = {false, false, true};
- for (unsigned int i = 0; i < sizeof (dcsl) / sizeof (dcsl[0]); ++i) {
-  bool result = dcslinear_full(&dcsl[i]);
+ for (unsigned int i = 0; i < sizeof (dcss) / sizeof (dcss[0]); ++i) {
+  bool result = dcslinear_full(&dcss[i]);
   if (expected[i] != result) {
    fprintf(stderr, "dcslinear_full() failed at input #%u\n", i);
    pass = false;
@@ -102,10 +106,10 @@ bool test_dcslinear_full() {
 
 bool test_dcslinear_get() {
  bool pass = true;
- for (unsigned int i = 0; i < sizeof (dcsl) / sizeof (dcsl[0]); ++i) {
-  for (ElementIdx idx = 0; idx < dcsl[i].capacity; ++idx) {
-   ElementPtr result = dcslinear_get(&dcsl[i], idx);
-   if (dcsl[i].dat + idx * dcsl[i].itemsize != result) {
+ for (unsigned int i = 0; i < sizeof (dcss) / sizeof (dcss[0]); ++i) {
+  for (ElementIdx idx = 0; idx < dcss[i].capacity; ++idx) {
+   ElementPtr result = dcslinear_get(&dcss[i], idx);
+   if (dcss[i].dat + idx * dcss[i].itemsize != result) {
     fprintf(stderr, "dcslinear_get() failed at input #%u\n", i);
     pass = false;
    }
@@ -117,14 +121,14 @@ bool test_dcslinear_get() {
 bool test_dcslinear_set() {
  bool pass = true;
 
- char dat[] = "abcabcabcabcabc";
+ DcsLinear store = T2;
+ memcpy(store.dat, T2DAT_INIT, store.itemsize * store.capacity);
  char pattern[] = "zzz";
- DcsLinear store = {3, 5, 5, (ElementPtr)dat};
- ElementIdx  idx = 1;
- char expected[] = "abczzzabcabcabc";
+ ElementIdx idx = 1;
+ char expected[] = "ab0zzzab2ab3ab4";
 
- dcslinear_set(&store, idx, (ElementPtr)pattern);
- if (strcmp(expected, dat)) {
+ dcslinear_set(&store, idx, (ElementPtr) pattern);
+ if (memcmp(expected, store.dat, store.itemsize * store.capacity)) {
   fprintf(stderr, "dcslinear_set() failed\n");
   pass = false;
  }
@@ -134,13 +138,13 @@ bool test_dcslinear_set() {
 bool test_dcslinear_xtract() {
  bool pass = true;
 
- char dat[] = "ab0ab1ab2ab3ab4";
+ DcsLinear store = T2;
+ memcpy(store.dat, T2DAT_INIT, store.itemsize * store.capacity);
  char result[] = "zzzz";
- DcsLinear store = {3, 5, 5, (ElementPtr)dat};
- ElementIdx  idx = 3;
+ ElementIdx idx = 3;
  char expected[] = "ab3z";
 
- dcslinear_copy_to(&store, idx, (ElementPtr)result);
+ dcslinear_copy_to(&store, idx, (ElementPtr) result);
  if (strncmp(expected, result, 4)) {
   fprintf(stderr, "dcslinear_copy_to() failed. Expected: %s, actual: %s\n", expected, result);
   pass = false;
@@ -151,8 +155,8 @@ bool test_dcslinear_xtract() {
 bool test_dcslinear_begin() {
  bool pass = true;
  DcsIterator expected[] = {0, 0, 0};
- for (unsigned int i = 0; i < sizeof (dcsl) / sizeof (dcsl[0]); ++i) {
-  DcsIterator result = dcslinear_begin(&dcsl[i]);
+ for (unsigned int i = 0; i < sizeof (dcss) / sizeof (dcss[0]); ++i) {
+  DcsIterator result = dcslinear_begin(&dcss[i]);
   if (expected[i] != result) {
    fprintf(stderr, "dcslinear_begin() failed at input #%u\n", i);
    pass = false;
@@ -164,10 +168,41 @@ bool test_dcslinear_begin() {
 bool test_dcslinear_end() {
  bool pass = true;
  DcsIterator expected[] = {0, 1, 5};
- for (unsigned int i = 0; i < sizeof (dcsl) / sizeof (dcsl[0]); ++i) {
-  DcsIterator result = dcslinear_end(&dcsl[i]);
+ for (unsigned int i = 0; i < sizeof (dcss) / sizeof (dcss[0]); ++i) {
+  DcsIterator result = dcslinear_end(&dcss[i]);
   if (expected[i] != result) {
    fprintf(stderr, "dcslinear_begin() failed at input #%u\n", i);
+   pass = false;
+  }
+ }
+ return pass;
+}
+
+bool test_dcslinear_it_all() {
+ bool pass = true;
+ DcsIterator it0 = dcslinear_begin(&T2);
+ for (ElementIdx i = 0; i < T2.capacity; ++i) {
+  DcsIterator it_nxt = dcslinear_next_iterator(&T2, it0);
+  if (it_nxt != it0 + 1) {
+   fprintf(stderr, "dcslinear_next_iterator() failed at iteration #%u\n", i);
+   pass = false;
+  }
+  if (dcslinear_iterator_equals(&T2, it_nxt, it0)) {
+   fprintf(stderr, "!dcslinear_iterator_equals() failed at iteration #%u\n", i);
+   pass = false;
+  }
+  ElementPtr dat0 = dcslinear_deref_iterator(&T2, it0);
+  if (dat0 != dcslinear_get(&T2, i)) {
+   fprintf(stderr, "dcslinear_deref_iterator() failed at iteration #%u\n", i);
+   pass = false;
+  }
+  dcslinear_inc_iterator(&T2, &it0);
+  if (it_nxt != it0) {
+   fprintf(stderr, "dcslinear_inc_iterator() failed at iteration #%u\n", i);
+   pass = false;
+  }
+  if (!dcslinear_iterator_equals(&T2, it_nxt, it0)) {
+   fprintf(stderr, "dcslinear_iterator_equals() failed at iteration #%u\n", i);
    pass = false;
   }
  }
@@ -179,7 +214,7 @@ int main(int argc, const char *argv[]) {
   fprintf(stderr, "Test program %s does not require any arguments\n", argv[0]);
  }
 
- assert(test_dcslinear_init());
+ assert(test_dcsstack_init());
  assert(test_dcslinear_size());
  assert(test_dcslinear_capacity());
  assert(test_dcslinear_empty());
@@ -189,6 +224,8 @@ int main(int argc, const char *argv[]) {
  assert(test_dcslinear_xtract());
  assert(test_dcslinear_begin());
  assert(test_dcslinear_end());
+
+ assert(test_dcslinear_it_all());
 
  return 0;
 }

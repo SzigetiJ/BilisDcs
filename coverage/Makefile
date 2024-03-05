@@ -15,7 +15,7 @@ CFLAGS_X=-W -Wall -Wpedantic -O0 -std=c99 -I$(SRCDIR)
 
 LDFLAGS=-fprofile-arcs -ftest-coverage
 
-TEST_X0 = dcslinear
+TEST_X0 = dcslinear dcsstack
 #TEST_X1 = intio uint
 #TEST_Y0 = io prec add mul eq pval
 
