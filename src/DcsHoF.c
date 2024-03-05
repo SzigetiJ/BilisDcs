@@ -140,7 +140,7 @@ DcsIterator dcshof_next_iterator(const DcsHoF *a, const DcsIterator it) {
 }
 
 void dcshof_inc_iterator(const DcsHoF *a, DcsIterator *it) {
-  return dcslinear_inc_iterator(&a->base, it);
+  dcslinear_inc_iterator(&a->base, it);
 }
 
 ElementPtr dcshof_deref_iterator(const DcsHoF *a, const DcsIterator it) {
